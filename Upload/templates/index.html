@@ -19,6 +19,12 @@
 <body>
 {% load static %}
 <div class="container-fluid">
+    {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endif %}
     <div class="navbar-brand text-center">
         NBQ
     </div>
@@ -47,8 +53,8 @@
 <script>
     function showPreview(event) {
         if (event.target.files.length > 0) {
-            var src = URL.createObjectURL(event.target.files[0]);
-            var preview = document.getElementById("preview");
+            let src = URL.createObjectURL(event.target.files[0]);
+            let preview = document.getElementById("preview");
             preview.src = src;
             preview.style.display = "block";
         }
