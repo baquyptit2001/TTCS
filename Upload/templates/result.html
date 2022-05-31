@@ -23,12 +23,12 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title text-center">Face List</h3>
+                    <h3 class="card-title text-center">Có {{ result|length }} người ở trong ảnh</h3>
                 </div>
                 <div class="card-body">
                     <div class="row justify-content-center">
                         {% for img in result %}
-                            <div class="col-md-3">
+                            <div class="col-md-3 d-flex justify-content-center">
                                 <img src="{% static img %}" alt="" class="img-thumbnail">
                             </div>
                         {% endfor %}
@@ -36,14 +36,14 @@
                 </div>
                 <div class="card-body">
                     <div class="row justify-content-center">
-                        <div class="col-md-6">
-                            <img src="{% static img_big %}" alt="" class="img-thumbnail">
+                        <div class="col-md-5 d-flex justify-content-center">
+                            <img src="{% static img_big %}" alt="" class="w-100 img-thumbnail">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-2 mt-3">
+        <div class="col-2 mt-3 mb-5 text-center">
             <a href="/" class="btn btn-primary btn-lg" tabindex="-1" role="button"
                aria-disabled="true">Back</a>
         </div>
