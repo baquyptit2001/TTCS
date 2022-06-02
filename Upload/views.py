@@ -20,9 +20,10 @@ def index(request):
         for f in files:
             os.remove(f)
         fs = FileSystemStorage()
-        file_save = str(settings.STATICFILES_DIRS[0]) + '/crop/' + request.FILES['image'].name
+        extension = os.path.splitext(request.FILES['image'].name)[1]
+        file_save = 'static/crop/' + 'raw' + extension
         file_name = fs.save(file_save, request.FILES['image'])
-        result = crop_face(fs.url(file_name))
+        result = crop_face(file_save)
         if result is None:
             return render(request, 'index.html', {'error': 'No face detected'})
         img_big = result.pop()
