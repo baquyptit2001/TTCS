@@ -20,9 +20,9 @@ def index(request):
         for f in files:
             os.remove(f)
         fs = FileSystemStorage()
-        file_save = str(settings.STATICFILES_DIRS[0]) + '/crop/' + request.FILES['image'].name
+        file_save = 'static/crop/' + request.FILES['image'].name
         file_name = fs.save(file_save, request.FILES['image'])
-        result = crop_face(fs.url(file_name))
+        result = crop_face(file_save)
         if result is None:
             return render(request, 'index.html', {'error': 'No face detected'})
         img_big = result.pop()
@@ -45,8 +45,8 @@ def crop_face(img_path):
         roi_gray = gray[y:y + h, x:x + w]
         roi_color = img[y:y + h, x:x + w]
         cv2.imwrite('face.png', roi_color)
-        file_name = fs.save(str(settings.STATICFILES_DIRS[0]) + '/' + 'crop/face.png', open('face.png', 'rb'))
+        file_name = fs.save('static/' + 'crop/face.png', open('face.png', 'rb'))
         result.append(fs.url(file_name)[7:])
-    cv2.imwrite(str(settings.STATICFILES_DIRS[0]) + '/' + 'crop/image.png', img)
+    cv2.imwrite('static/' + 'crop/image.png', img)
     result.append('crop/image.png')
     return result
