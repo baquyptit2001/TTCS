@@ -12,6 +12,11 @@ import glob
 # Create your views here.
 from Upload import models
 
+age_net = cv2.dnn.readNet('age_net.caffemodel', 'age_deploy.prototxt.txt')
+gender_net = cv2.dnn.readNet('gender_net.caffemodel', 'gender_deploy.prototxt.txt')
+MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
+ageList = ['(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
+genderList = ['Nam', 'Nữ']
 
 def index(request):
     if request.method == 'POST':
@@ -20,7 +25,8 @@ def index(request):
         for f in files:
             os.remove(f)
         fs = FileSystemStorage()
-        file_save = 'static/crop/' + request.FILES['image'].name
+        extension = os.path.splitext(request.FILES['image'].name)[1]
+        file_save = 'static/crop/' + 'raw' + extension
         file_name = fs.save(file_save, request.FILES['image'])
         result = crop_face(file_save)
         if result is None:
@@ -45,8 +51,32 @@ def crop_face(img_path):
         roi_gray = gray[y:y + h, x:x + w]
         roi_color = img[y:y + h, x:x + w]
         cv2.imwrite('face.png', roi_color)
-        file_name = fs.save('static/' + 'crop/face.png', open('face.png', 'rb'))
-        result.append(fs.url(file_name)[7:])
-    cv2.imwrite('static/' + 'crop/image.png', img)
+        age_preds = get_age_predictions(roi_color)
+        gender_preds = get_gender_predictions(roi_color)
+        tmp = []
+        file_name = fs.save(str(settings.STATICFILES_DIRS[0]) + '/' + 'crop/face.png', open('face.png', 'rb'))
+        tmp.append(fs.url(file_name)[7:])
+        tmp.append(ageList[age_preds[0].argmax()])
+        tmp.append(genderList[gender_preds[0].argmax()])
+        result.append(tmp)
+    cv2.imwrite(str(settings.STATICFILES_DIRS[0]) + '/' + 'crop/image.png', img)
     result.append('crop/image.png')
     return result
+
+
+def get_gender_predictions(face_img):
+    blob = cv2.dnn.blobFromImage(
+        image=face_img, scalefactor=1.0, size=(227, 227),
+        mean=MODEL_MEAN_VALUES, swapRB=False, crop=False
+    )
+    gender_net.setInput(blob)
+    return gender_net.forward()
+
+
+def get_age_predictions(face_img):
+    blob = cv2.dnn.blobFromImage(
+        image=face_img, scalefactor=1.0, size=(227, 227),
+        mean=MODEL_MEAN_VALUES, swapRB=False
+    )
+    age_net.setInput(blob)
+    return age_net.forward()
