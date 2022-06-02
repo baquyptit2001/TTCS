@@ -18,6 +18,7 @@ MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
 ageList = ['(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
 genderList = ['Nam', 'Nữ']
 
+
 def index(request):
     if request.method == 'POST':
         # upload(request)
@@ -54,12 +55,12 @@ def crop_face(img_path):
         age_preds = get_age_predictions(roi_color)
         gender_preds = get_gender_predictions(roi_color)
         tmp = []
-        file_name = fs.save(str(settings.STATICFILES_DIRS[0]) + '/' + 'crop/face.png', open('face.png', 'rb'))
+        file_name = fs.save('static/crop/face.png', open('face.png', 'rb'))
         tmp.append(fs.url(file_name)[7:])
         tmp.append(ageList[age_preds[0].argmax()])
         tmp.append(genderList[gender_preds[0].argmax()])
         result.append(tmp)
-    cv2.imwrite(str(settings.STATICFILES_DIRS[0]) + '/' + 'crop/image.png', img)
+    cv2.imwrite('static/crop/image.png', img)
     result.append('crop/image.png')
     return result
 
