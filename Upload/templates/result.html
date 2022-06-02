@@ -29,7 +29,8 @@
                     <div class="row justify-content-center">
                         {% for img in result %}
                             <div class="col-md-3 d-flex justify-content-center">
-                                <img src="{% static img %}" alt="" class="img-thumbnail">
+                                <img src="{% static img.0 %}" alt="" class="img-thumbnail">
+                                <div>Age: {{ img.1 }} Gender: {{ img.2 }}</div>
                             </div>
                         {% endfor %}
                     </div>
