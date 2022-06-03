@@ -1,16 +1,10 @@
 from django.shortcuts import render
 from django.conf import settings
-from PIL import Image
-from django.http import HttpResponse
 import cv2
-import numpy as np
 from django.core.files.storage import FileSystemStorage
-from django.templatetags.static import static
 import os
 import glob
 
-# Create your views here.
-from Upload import models
 
 age_net = cv2.dnn.readNet('age_net.caffemodel', 'age_deploy.prototxt.txt')
 gender_net = cv2.dnn.readNet('gender_net.caffemodel', 'gender_deploy.prototxt.txt')
