@@ -5,30 +5,14 @@ import cv2
 import threading
 
 
-# @gzip.gzip_page
-# def index(request):
-#     try:
-#         cam = VideoCamera()
-#         return StreamingHttpResponse(gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
-#     except:
-#         pass
-#     return render(request, 'stream.html')
-
-
+@gzip.gzip_page
 def index(request):
-    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt2.xml')
-    cap = cv2.VideoCapture(0)
-    while True:
-        ret, img = cap.read()
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-        for (x, y, w, h) in faces:
-            img = img[y:y + h, x:x + w]
-        cv2.imshow('img', img)
-        k = cv2.waitKey(30)
-        if k == 27:
-            break
-    cap.release()
+    try:
+        cam = VideoCamera()
+        return StreamingHttpResponse(gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
+    except:
+        pass
+    return render(request, 'stream.html')
 
 
 # to capture video class
@@ -54,9 +38,6 @@ class VideoCamera(object):
             face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt2.xml')
             faces = face_cascade.detectMultiScale(gray, 1.3, 5)
             for (x, y, w, h) in faces:
-                # cv2.rectangle(self.frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                # roi_color = self.frame[y:y + h, x:x + w]
-                # cv2.imwrite('face.png', roi_color)
                 self.frame = self.frame[y:y + h, x:x + w]
 
 
