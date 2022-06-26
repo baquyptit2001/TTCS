@@ -4,6 +4,7 @@ import cv2
 from django.core.files.storage import FileSystemStorage
 import os
 import glob
+import filetype
 
 
 age_net = cv2.dnn.readNet('age_net.caffemodel', 'age_deploy.prototxt.txt')
@@ -16,6 +17,8 @@ genderList = ['Nam', 'Nữ']
 def index(request):
     if request.method == 'POST':
         # Xoá các ảnh đã xử lý của request trước để tránh gây đầy folder
+        if not filetype.is_image(request.FILES['image']):
+            return render(request, 'index.html', {'error': 'Invalid file type'})
         files = glob.glob(str(settings.STATICFILES_DIRS[0]) + '/' + 'crop/*')
         for f in files:
             os.remove(f)

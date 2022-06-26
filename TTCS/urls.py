@@ -19,4 +19,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('Upload.urls'), name='upload'),
+    path('stream/', include('Stream.urls'), name='stream'),
 ]
